@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { DropArea } from "./DropArea";
+import CoreRow from "./CoreRow";
 import {
   PlusIcon,
   EllipsisHorizontalIcon,
@@ -149,11 +150,23 @@ const BuildContainer = ({
     };
   }, [dropdownOpen]);
 
-  const handleDrop = (a, b) => {
+  // const handleDrop = (a, b) => {
+  //   if (onDrop) {
+  //     onDrop(a, b);
+  //   }
+  // };
+  const handleDrop = ({ targetType, targetSectionIndex, targetRowIndex }) => {
     if (onDrop) {
-      onDrop(a, b);
+      if (targetType === "section") {
+        // Handle section drop logic
+        onDrop(targetSectionIndex);
+      } else if (targetType === "row") {
+        // Handle row (column) drop logic
+        onDrop(targetSectionIndex, targetRowIndex);
+      }
     }
   };
+  
 
   return (
     <div className="w-[85%] h-screen bg-gray-50 p-4 overflow-auto shadow-inner">
@@ -260,9 +273,11 @@ const BuildContainer = ({
                   setSelectedComponent({ type: "row", sectionIndex: sectionIndex, columnIndex: colIndex })
                 }}
                 onDragEnd={() => setSelectedComponent(null)}
-                style={{
-                  zIndex: 1000
+                onDrop={(e) => {
+                  e.preventDefault();
+                  onDrop({ targetType: "row", targetSectionIndex: sectionIndex, targetColumnIndex: colIndex });
                 }}
+                onDragOver={(e) => e.preventDefault()}
               >
                 <div className="flex justify-between items-center w-full">
                   <input
@@ -292,7 +307,8 @@ const BuildContainer = ({
                   </div>
                 </div>
                 {col?.fields?.map((e) => {
-                  return <h1 className="text-gray-800">{e?.fieldType}</h1>;
+                  console.log("E is: ", e)
+                  return <CoreRow  fieldType={e?.type}/>
                 })}
                 <DropArea onDrop={() => handleDrop(section?.id, col?.id)} />
               </div>

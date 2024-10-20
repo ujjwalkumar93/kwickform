@@ -10,8 +10,8 @@ export const FieldTypeList = ({setSelectedComponent}) => {
           <div
             className="bg-white p-3 mb-4 shadow-md rounded-lg cursor-pointer text-neutral-800"
             draggable
-            onDragStart={() => setSelectedComponent({index, field, ...{isSection:false}})}
-            onDragEnd={() => setSelectedComponent(null)}
+            onDragStart={() => setSelectedComponent({type: "field", ...field})}
+            // onDragEnd={() => setSelectedComponent(null)}
             key={index}
           >
             {field.fieldType}
